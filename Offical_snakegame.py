@@ -2,8 +2,10 @@ import pygame
 import random
 import time
 pygame.init()
+pygame.mixer.init
 
-
+game_over_sound = pygame.mixer.Sound("game_over sound.wav")
+Food_collection_sound= pygame.mixer.Sound("food colection sound.wav")
 box_len = 1500
 box_height = 1000
 color_1 = (0, 0, 0)  # white (keep as is)
@@ -241,6 +243,7 @@ def game_start():
 
     while not game_over:
         while game_close:
+            game_over_sound.play()
             add_caption.fill(color_1)
             display_msg("You lost!", color_4)
             final_score(snake_len - 1)
@@ -313,6 +316,7 @@ def game_start():
 
         
         if value_x1 >= box_len or value_x1 < 0 or value_y1 >= box_height or value_y1 < 0:
+            game_over_sound.play()
             game_close = True
 
         # Update enemy position if it exists
@@ -342,7 +346,7 @@ def game_start():
             foodx_pos, foody_pos = spawn_food()
             snake_len += 1  
             food_collected += 1 
-            
+            Food_collection_sound.play()
             snake_speed += 2
 
             if food_collected == 5:
