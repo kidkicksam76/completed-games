@@ -6,6 +6,10 @@ pygame.mixer.init
 
 game_over_sound = pygame.mixer.Sound("game_over sound.wav")
 Food_collection_sound= pygame.mixer.Sound("food colection sound.wav")
+click_sound = pygame.mixer.Sound("click.wav")
+explosion_sound = pygame.mixer.Sound("explosion.wav")
+pygame.mixer.music.load("main_menu.wav")
+pygame.mixer.music.load("game_theme.wav")
 box_len = 1500
 box_height = 1000
 color_1 = (0, 0, 0)  # white (keep as is)
@@ -72,6 +76,10 @@ def main_menu():
     increasing = True
     button_width = 300
     button_height = 50
+    pygame.mixer_music.stop()
+    pygame.mixer_music.load("main_menu.wav")
+    pygame.mixer.music.play(-1)
+
 
     circles = [{'pos': [random.randint(0, box_len), random.randint(0, box_height)], 'radius': random.randint(20, 50), 'speed': [random.choice([-2, 2]), random.choice([-2, 2])]} for _ in range(10)]
 
@@ -102,11 +110,13 @@ def main_menu():
 
         
         if draw_button("Welcome to Snake game", box_len / 6, box_height / 3 - 60, button_width, button_height, color_5, (0, 200, 0)):
-            print("Welcome button clicked")
+            click_sound.play()
         if draw_button("Press P to Play", box_len / 6, box_height / 3, button_width, button_height, color_2, (200, 100, 0)):
-            game_start() 
+            game_start()
+            click_sound.play() 
         if draw_button("Controls", box_len / 6, box_height / 3 + 120, button_width, button_height, color_5, (220, 200, 0)):
             print("movement = wsad or arrowkeys press, p for play/pause menu")
+            click_sound.play()
         if draw_button("Press Q to Quit", box_len / 6, box_height / 3 + 60, button_width, button_height, color_4, (200, 200, 0)):
             pygame.quit()
             quit()
@@ -193,6 +203,7 @@ def pause_menu():
         # Draw "Resume" and "Quit" buttons with enhanced styling
         if draw_button_with_effects("Resume", box_len / 6, box_height / 2 - 60, 300, 50, color_2, (255, 140, 0)):
             paused = False  # Unpause the game
+            click_sound.play()
         if draw_button_with_effects("Quit", box_len / 6, box_height / 2 + 20, 300, 50, color_4, (255, 255, 0)):
             pygame.quit()
             quit()
@@ -208,10 +219,14 @@ def pause_menu():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_p:
                     paused = False
+                    click_sound.play()
+            
                     
 def game_start():
     global snake_speed
-
+    pygame.mixer.music.stop()
+    pygame.mixer.music.load("game_theme.wav")
+    pygame.mixer.music.play(-1)
     default_snake_speed = 14
 
     default_enemy_move_delay = 25
@@ -242,6 +257,7 @@ def game_start():
     enemy_move_timer = 0  # Timer to keep track of enemy movement delay
 
     while not game_over:
+        
         while game_close:
             game_over_sound.play()
             add_caption.fill(color_1)
@@ -351,6 +367,7 @@ def game_start():
 
             if food_collected == 5:
                 enemy_position = [random.randrange(0, box_len, snake_block), random.randrange(0, box_height, snake_block)]
+                explosion_sound.play()
 
 
         if enemy_position:
